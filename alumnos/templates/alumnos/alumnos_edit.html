@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div style="text-align: center;">
+        <h1>Formulario CRUD para alumnos</h1>
+
+        <!--
+            Validamos que el objeto alumno tenga datos.
+        -->
+        {% if alumno %}
+        <!--
+            Action apuntando a “alumnosUpdate.
+        -->
+        <form action="{% url 'alumnosUpdate' %}" method="POST">
+            {% csrf_token %}
+            <!--
+                Usando el atributo value para asignar  valores a los campos del formulario.
+            -->
+            <pre>Rut:                           <input type="text" name="rut"      value="{{alumno.rut}}"></pre>
+            <pre>Nombre:                        <input type="text" name="nombre"   value="{{alumno.nombre}}"></pre>
+            <pre>Apellido P.:                   <input type="text" name="paterno"  value="{{alumno.apellido_paterno}}"></pre>
+            <pre>Apellido M.:                   <input type="text" name="materno"  value="{{alumno.apellido_materno}}"></pre>
+            <pre>Fecha Nac.:                    <input type="date" name="fechaNac" value="{{ alumno.fecha_nacimiento|date:'Y-m-d' }}"></pre>
+            <pre>Género:                        <select name="genero">
+
+            <!--
+                Ciclo For para recorrer los objetos Géneros y mostrarlos en el componente Select.
+
+                {{genero.id_genero}}  contiene el id el primero objeto Género.
+
+                {{genero.genero}}  contiene el género asociado al id 
+
+                En el navegador seleccionar “mostrar código de la página” y comprobar lo antes explicado.
+            -->
+            {% for genero in generos %}
+                <!--
+                    Si el género de for coincide con el género del alumno asigna esa opción en el formulario, en caso contrario pasa al else.
+                -->
+                {% if genero.genero == alumno.id_genero.genero %}
+                    <option value="{{genero.id_genero}}" selected>{{genero.genero}}</option>
+                {% else %}
+                    <option value="{{genero.id_genero}}">{{genero.genero}}</option>
+                {% endif %}
+            {% endfor %}
+            </select></pre>
+
+            <pre>Celular:                       <input type="text" name="telefono"  value="{{alumno.telefono}}"></pre>
+            <pre>Email:                         <input type="mail" name="email"     value="{{alumno.email}}"></pre>
+            <pre>Dirección:                     <input type="text" name="direccion" value="{{alumno.direccion}}"></pre>
+
+            <input type="submit" name="opcion" value="Actualizar">
+
+        </form> <br><br>
+        <a href="{% url 'crud' %}">Volver</a>
+        <br>
+        <div id="idMensajes">
+            {% if mensaje %}
+            {{mensaje}}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
