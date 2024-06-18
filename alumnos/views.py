@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect
 from .models import Alumno,Genero
+from .forms import GeneroForm
 # Create your views here.
 
 # Función para mostrar el índice principal con todos los alumnos
@@ -95,24 +97,30 @@ def alumnos_del(request, pk):
         # Renderiza la plantilla 'alumnos_list.html' con el contexto
         return render(request, 'alumnos/alumnos_list.html', context)
     
+# Función para encontrar y editar un alumno
 def alumnos_findEdit(request, pk):
-
     if pk != "":
+        # Intentamos obtener el alumno por su rut
         alumno = Alumno.objects.get(rut=pk)
         generos = Genero.objects.all()
 
+        # Imprime el tipo del atributo genero del alumno (para depuración)
         print(type(alumno.id_genero.genero))
 
         context = {'alumno': alumno, 'generos': generos}
 
         if alumno:
+            # Si el alumno existe, renderizamos el formulario de edición
             return render(request, 'alumnos/alumnos_edit.html', context)
         else:
+            # Si no se encuentra el alumno, mostramos un mensaje de error
             context = {'mensaje': "Error, el rut no existe..."}
-            return render(request, 'alumnos/alumnos_list.html', context)       
+            return render(request, 'alumnos/alumnos_list.html', context)
 
+# Función para actualizar un alumno
 def alumnosUpdate(request):
     if request.method == "POST":
+        # Obtenemos los datos del formulario
         rut = request.POST["rut"]
         nombre = request.POST["nombre"]
         aPaterno = request.POST["paterno"]
@@ -144,10 +152,91 @@ def alumnosUpdate(request):
 
         generos = Genero.objects.all()
         context = {'mensaje': "Ok, datos actualizados...",
-                   'generos': generos,
-                   'alumno': alumno}
+                'generos': generos,
+                'alumno': alumno}
         return render(request, 'alumnos/alumnos_edit.html', context)
     else:
+        # Si la solicitud no es POST, mostramos la lista de alumnos
         alumnos = Alumno.objects.all()
         context = {'alumnos': alumnos}
         return render(request, 'alumnos/alumnos_list.html', context)
+
+# Función para mostrar la lista de géneros
+def crud_generos(request):
+    generos = Genero.objects.all()
+    context = {'generos': generos}
+    print('Enviando datos generos_list')
+    # Renderiza la lista de géneros
+    return render(request, "alumnos/generos_list.html", context)
+
+# Función para agregar un nuevo género
+def generosAdd(request):
+    print("Estoy en controlador generosAdd...")
+    context = {}
+
+    if request.method == "POST":
+        print("Controlador es un post...")
+        form = GeneroForm(request.POST)
+        if form.is_valid:
+            print("Estoy en agregar, is_valid")
+            form.save()
+
+            # Limpiar Form
+            form = GeneroForm()
+
+            context = {'mensaje': "Ok, datos grabados...",
+                    'form': form}
+            return render(request, "alumnos/generos_add.html", context)
+    else:
+        form = GeneroForm()
+        context = {'form': form}
+        return render(request, "alumnos/generos_add.html", context)
+
+# Función para eliminar un género
+def generos_del(request, pk):
+    mensajes = []
+    errores = []
+    generos = Genero.objects.all()
+    try:
+        # Intentamos obtener y eliminar el género por su ID
+        genero = Genero.objects.get(id_genero=pk)
+        if genero:
+            genero.delete()
+            mensajes.append("Bien, datos eliminados...")
+            context = {'generos': generos, 'mensajes': mensajes, 'errores': errores}
+            return render(request, "alumnos/generos_list.html", context)
+    except Genero.DoesNotExist:
+        # Si no se encuentra el género, mostramos un mensaje de error
+        print("Error, id no existe...")
+        mensaje = "Error, id no existe"
+        context = {'mensaje': mensaje, 'generos': generos}
+        return render(request, "alumnos/generos_list.html", context)
+
+# Función para editar un género
+def generos_edit(request, pk):
+    try:
+        # Intentamos obtener el género por su ID
+        genero = Genero.objects.get(id_genero=pk)
+        if request.method == "POST":
+            # Si es una solicitud POST, procesamos el formulario
+            form = GeneroForm(request.POST, instance=genero)
+            if form.is_valid():
+                form.save()
+                mensaje = "Datos actualizados correctamente."
+                context = {'genero': genero, 'form': form, 'mensaje': mensaje}
+                return render(request, "alumnos/generos_edit.html", context)
+            else:
+                # Si el formulario no es válido, seguimos mostrando el formulario con errores
+                context = {'genero': genero, 'form': form, 'mensaje': ""}
+                return render(request, "alumnos/generos_edit.html", context)
+        else:
+            # Si es una solicitud GET, mostramos el formulario para editar el género
+            form = GeneroForm(instance=genero)
+            context = {'genero': genero, 'form': form, 'mensaje': ""}
+            return render(request, "alumnos/generos_edit.html", context)
+    except Genero.DoesNotExist:
+        # Manejo de caso donde el género no existe
+        generos = Genero.objects.all()
+        mensaje = "Error, el id de género no existe."
+        context = {'mensaje': mensaje, 'generos': generos}
+        return render(request, "alumnos/generos_list.html", context)

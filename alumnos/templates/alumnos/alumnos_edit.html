@@ -1,46 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8"> <!-- Especifica la codificación de caracteres para el documento -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para que se adapte al ancho del dispositivo -->
+    <title>Document</title> <!-- Título del documento -->
 </head>
 <body>
     <div style="text-align: center;">
-        <h1>Formulario CRUD para alumnos</h1>
+        <h1>Formulario CRUD para alumnos</h1> <!-- Encabezado principal de la página -->
 
-        <!--
-            Validamos que el objeto alumno tenga datos.
-        -->
-        {% if alumno %}
-        <!--
-            Action apuntando a “alumnosUpdate.
-        -->
+        
+        {% if alumno %} <!-- Validamos que el objeto alumno tenga datos. -->
+
+        <!-- Formulario que apunta a la URL 'alumnosUpdate' para manejar la actualización de los datos del alumno. -->
         <form action="{% url 'alumnosUpdate' %}" method="POST">
-            {% csrf_token %}
-            <!--
-                Usando el atributo value para asignar  valores a los campos del formulario.
-            -->
+
+            {% csrf_token %} <!-- Token de seguridad CSRF de Django para proteger contra ataques CSRF -->
+
+            <!-- Usando el atributo value para asignar valores a los campos del formulario con los datos del alumno.-->
             <pre>Rut:                           <input type="text" name="rut"      value="{{alumno.rut}}"></pre>
             <pre>Nombre:                        <input type="text" name="nombre"   value="{{alumno.nombre}}"></pre>
             <pre>Apellido P.:                   <input type="text" name="paterno"  value="{{alumno.apellido_paterno}}"></pre>
             <pre>Apellido M.:                   <input type="text" name="materno"  value="{{alumno.apellido_materno}}"></pre>
             <pre>Fecha Nac.:                    <input type="date" name="fechaNac" value="{{ alumno.fecha_nacimiento|date:'Y-m-d' }}"></pre>
             <pre>Género:                        <select name="genero">
-
+            
             <!--
                 Ciclo For para recorrer los objetos Géneros y mostrarlos en el componente Select.
-
-                {{genero.id_genero}}  contiene el id el primero objeto Género.
-
-                {{genero.genero}}  contiene el género asociado al id 
-
+                {{genero.id_genero}} contiene el id del objeto Género.
+                {{genero.genero}} contiene el nombre del género asociado al id.
                 En el navegador seleccionar “mostrar código de la página” y comprobar lo antes explicado.
             -->
             {% for genero in generos %}
-                <!--
-                    Si el género de for coincide con el género del alumno asigna esa opción en el formulario, en caso contrario pasa al else.
-                -->
+
+                <!-- Si el género de for coincide con el género del alumno, marca esa opción en el formulario, en caso contrario, pasa al else.-->
                 {% if genero.genero == alumno.id_genero.genero %}
                     <option value="{{genero.id_genero}}" selected>{{genero.genero}}</option>
                 {% else %}
@@ -53,14 +46,16 @@
             <pre>Email:                         <input type="mail" name="email"     value="{{alumno.email}}"></pre>
             <pre>Dirección:                     <input type="text" name="direccion" value="{{alumno.direccion}}"></pre>
 
-            <input type="submit" name="opcion" value="Actualizar">
+            <input type="submit" name="opcion" value="Actualizar"> <!-- Botón para enviar el formulario -->
 
-        </form> <br><br>
-        <a href="{% url 'crud' %}">Volver</a>
+        </form> 
+        <br><br>
+        <a href="{% url 'crud' %}">Volver</a> <!-- Enlace para volver a la vista 'crud' -->
         <br>
         <div id="idMensajes">
+            <!-- Si hay un mensaje en el contexto, se muestra en este div. -->
             {% if mensaje %}
-            {{mensaje}}
+                {{mensaje}}
             {% endif %}
         </div>
         {% endif %}

@@ -14,10 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # instituto/urls.py
+
+# Importa las funciones necesarias para definir las URL del proyecto
 from django.contrib import admin
 from django.urls import path, include
 
+# Lista de patrones de URL para el proyecto
 urlpatterns = [
+    # URL para el sitio de administración de Django
     path('admin/', admin.site.urls),
+
+    # Incluir las URLs definidas en la aplicación 'alumnos'
+    # Esto redirige cualquier URL que comience con 'alumnos/' a las URLs definidas en 'alumnos/urls.py'
     path('alumnos/', include('alumnos.urls')),
 ]

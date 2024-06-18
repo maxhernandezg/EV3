@@ -1,55 +1,57 @@
-{% load static %}
+{% load static %} <!-- Carga las etiquetas de template de Django para archivos estáticos -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8"> <!-- Especifica la codificación de caracteres para el documento -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la vista para que se adapte al ancho del dispositivo -->
+    <title>Document</title> <!-- Título del documento -->
 </head>
 <body>
     
-    <h1>Editar datos de Alumnos</h1>
+    <h1>Editar datos de Alumnos</h1> <!-- Encabezado principal de la página -->
     <br>
 
     <button type="button">
+        <!-- Enlace para agregar un nuevo alumno, utilizando la URL definida en Django -->
         <a href="{% url 'alumnosAdd' %}">Agregar Alumno</a>
     </button>
     
     <!--
-    Este div contiene un if que evalúa si en el context viene una variable llamada mensaje,
-    si es así entonces muestra el mensaje.   Acá es utilizado para indicar que el registro fue eliminado.
+    Este div contiene un if que evalúa si en el contexto viene una variable llamada mensaje,
+    si es así, entonces muestra el mensaje. Aquí se utiliza para indicar que el registro fue eliminado.
     -->
-    <!--
+
     <div>
         {% if mensaje %}
-            {{mensaje}}
+            {{mensaje}} <!-- Muestra el mensaje si existe -->
         {% endif %}
     </div>
-    -->
+
     <table>
         <!--
-        Evalúa si en el context viene una lista llamada alumnos y si contiene información, si es así muestra una tabla con los datos que indican los encabezados.
+        Evalúa si en el contexto viene una lista llamada alumnos y si contiene información, 
+        si es así muestra una tabla con los datos que indican los encabezados.
         -->
         {% if alumnos %}
-            <th>Rut</th>
-            <th>Nombre</th>
-            <th>Apellido P.</th>
-            <th>Eliminar</th>
-            <th>Modificar</th>
-            {% for x in alumnos %}
+            <th>Rut</th> <!-- Encabezado de la columna Rut -->
+            <th>Nombre</th> <!-- Encabezado de la columna Nombre -->
+            <th>Apellido P.</th> <!-- Encabezado de la columna Apellido Paterno -->
+            <th>Eliminar</th> <!-- Encabezado de la columna Eliminar -->
+            <th>Modificar</th> <!-- Encabezado de la columna Modificar -->
+            {% for x in alumnos %} <!-- Itera sobre cada alumno en la lista de alumnos -->
                 <tr>
-                    <td>{{ x.rut }}</td>
-                    <td>{{ x.nombre }}</td>
-                    <td>{{ x.apellido_paterno }}</td>
+                    <td>{{ x.rut }}</td> <!-- Muestra el Rut del alumno -->
+                    <td>{{ x.nombre }}</td> <!-- Muestra el Nombre del alumno -->
+                    <td>{{ x.apellido_paterno }}</td> <!-- Muestra el Apellido Paterno del alumno -->
                     <!--
-                    Esa es la forma para indicar la ruta para encontrar una función que se encargará de recibir 
-                    la variable pk con el rut a buscar para eliminar, mismo para para modificar.
+                    Esta es la forma de indicar la ruta para encontrar una función que se encargará de recibir 
+                    la variable pk con el rut a buscar para eliminar, lo mismo para modificar.
                     -->
-                    <td><a href="{% url 'alumnos_del' pk=x.rut %}">Eliminar</a></td>
-                    <td><a href="{% url 'alumnos_findEdit' pk=x.rut %}">Modificar</a></td>
+                    <td><a href="{% url 'alumnos_del' pk=x.rut %}">Eliminar</a></td> <!-- Enlace para eliminar el alumno -->
+                    <td><a href="{% url 'alumnos_findEdit' pk=x.rut %}">Modificar</a></td> <!-- Enlace para modificar el alumno -->
                 </tr>
-                {% endfor %}
+            {% endfor %}
         {% endif %}
     </table>
 

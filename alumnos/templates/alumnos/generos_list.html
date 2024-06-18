@@ -1,0 +1,53 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <h1>Generos</h1>
+    <br>
+
+    <button type="button">
+        <a href="{% url 'generosAdd' %}">Agregar Genero</a>
+    </button>
+    
+    <!--
+    Este div contiene un if que evalúa si en el context viene una variable llamada mensaje,
+    si es así entonces muestra el mensaje.   Acá es utilizado para indicar que el registro fue eliminado.
+    -->
+    <!--
+    <div>
+        {% if mensaje %}
+            {{mensaje}}
+        {% endif %}
+    </div>
+    -->
+    <table>
+        <!--
+        Evalúa si en el context viene una lista llamada generos y si contiene información, si es así muestra una tabla con los datos que indican los encabezados.
+        -->
+        {% if generos %}
+            <th>Género</th>
+            <th>Eliminar</th>
+            <th>Modificar</th>
+            {% for x in generos %}
+                <tr>
+                    <td>{{ x.genero }}</td>
+                    <!--
+                    Esa es la forma para indicar la ruta para encontrar una función que se encargará de recibir 
+                    la variable pk con el rut a buscar para eliminar, mismo para para modificar.
+                    -->
+                    <td><a href="{% url 'generos_del' pk=x.id_genero %}">Eliminar</a></td>
+                    <td><a href="{% url 'generos_edit' pk=x.id_genero %}">Modificar</a></td>
+                </tr>
+                {% endfor %}
+        {% endif %}
+    </table>
+
+</body>
+</html>

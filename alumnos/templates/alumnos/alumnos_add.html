@@ -2,38 +2,63 @@
 <html lang="en">
 
 <head>
+    <!-- Especifica la codificación de caracteres para el documento -->
     <meta charset="UTF-8">
+    <!-- Configura la vista para que se adapte al ancho del dispositivo -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título del documento -->
     <title>Document</title>
 </head>
 
 <body>
     <div style="text-align: center;">
+        <!-- Encabezado principal de la página -->
         <h1>Formulario CRUD para alumnos</h1>
+        
+        <!--
+            Formulario que apunta a la URL 'alumnosAdd' para manejar la adición de un nuevo alumno.
+        -->
         <form action="{% url 'alumnosAdd' %}" method="POST">
+            <!-- Token de seguridad CSRF de Django para proteger contra ataques CSRF -->
             {% csrf_token %}
-
+            
+            <!-- Campos del formulario para ingresar datos del alumno -->
             <pre>Rut:                           <input type="text" name="rut">      </pre>
             <pre>Nombre:                        <input type="text" name="nombre">   </pre>
             <pre>Apellido P.:                   <input type="text" name="paterno">  </pre>
             <pre>Apellido M.:                   <input type="text" name="materno">  </pre>
             <pre>Fecha Nac.:                    <input type="date" name="fechaNac"> </pre>
+            
+            <!--
+                Campo de selección para elegir el género del alumno.
+                Se itera sobre los objetos `generos` y se crea una opción para cada uno.
+            -->
             <pre>Género:                        <select name="genero">
             {% for genero in generos %}
                 <option value="{{genero.id_genero}}">{{genero.genero}}</option>
             {% endfor %}
             </select>     </pre>
+
+            <!-- Campos adicionales para ingresar datos de contacto y dirección -->
             <pre>Celular:   <input type="text" name="telefono"></pre>
             <pre>Email:     <input type="mail" name="email"></pre>
             <pre>Dirección: <input type="text" name="direccion"></pre>
 
+            <!-- Botón para enviar el formulario -->
             <input type="submit" name="opcion" value="Agregar">
-        </form> <br><br>
+        </form> 
+        <br><br>
+        
+        <!-- Enlace para volver a la vista 'crud' -->
         <a href="{% url 'crud' %}">Volver</a>
         <br>
+        
+        <!--
+            Div para mostrar mensajes condicionalmente si existen en el contexto.
+        -->
         <div id="idMensajes">
             {% if mensaje %}
-            {{mensaje}}
+                {{mensaje}}
             {% endif %}
         </div>
     </div>
